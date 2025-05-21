@@ -7,8 +7,7 @@ const pool = require("./db/db");
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // your local CRA dev server
-  "https://trackeflow.netlify.app/", //
-  // your Netlify frontend URL
+  "https://track-flow-eight.vercel.app/", //
 ];
 
 app.use(
