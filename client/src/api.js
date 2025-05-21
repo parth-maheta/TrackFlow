@@ -1,5 +1,5 @@
 const API_BASE = process.env.REACT_APP_API_BASE;
-
+console.log("API_BASE", API_BASE);
 export async function fetchLeads() {
   const res = await fetch(`${API_BASE}/leads`);
   return res.json();
