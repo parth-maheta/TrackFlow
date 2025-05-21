@@ -1,4 +1,4 @@
-const API_BASE = "https://trackflow-d2hg.onrender.com";
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 export async function fetchLeads() {
   const res = await fetch(`${API_BASE}/leads`);
@@ -27,14 +27,16 @@ export async function updateOrder(id, data) {
   });
   return res.json();
 }
+
 export async function createOrder(order) {
-  const res = await fetch("/api/orders", {
+  const res = await fetch(`${API_BASE}/orders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(order),
   });
   return res.json();
 }
+
 export async function createLead(lead) {
   const res = await fetch(`${API_BASE}/leads`, {
     method: "POST",
@@ -45,9 +47,9 @@ export async function createLead(lead) {
   console.log("createLead response:", data);
   return data;
 }
-// example:
+
 export async function updateOrderStatus(id, data) {
-  const res = await fetch(`/orders/${id}`, {
+  const res = await fetch(`${API_BASE}/orders/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
