@@ -7,13 +7,13 @@ const pool = require("./db/db");
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // your local CRA dev server
-  "https://your-frontend.netlify.app", // your Netlify frontend URL
+  "https://trackeflow.netlify.app/", //
+  // your Netlify frontend URL
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
