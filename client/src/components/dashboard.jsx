@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchLeads, fetchOrders } from "../../../client/src/api";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip as ReTooltip,
-  Legend,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+import { ResponsivePie } from "@nivo/pie";
+import { ResponsiveBar } from "@nivo/bar";
 
 const COLORS = [
   "#D946EF",
@@ -47,7 +36,6 @@ export default function Dashboard() {
     setOrders(orderData);
   }
 
-  // Metrics
   const totalLeads = leads.length;
   const openLeads = leads.filter(
     (l) => !["Won", "Lost"].includes(l.stage)
@@ -68,11 +56,14 @@ export default function Dashboard() {
     return followUp >= today && followUp <= weekAhead;
   }).length;
 
-  // Prepare data for charts
-  const ordersData = Object.entries(ordersByStatus).map(([status, count]) => ({
-    name: status,
-    value: count,
-  }));
+  const ordersData = Object.entries(ordersByStatus).map(
+    ([status, count], i) => ({
+      id: status,
+      label: status,
+      value: count,
+      color: COLORS[i % COLORS.length],
+    })
+  );
 
   const leadsByStage = stages.map((stage) => ({
     stage,
@@ -110,67 +101,81 @@ export default function Dashboard() {
           flexWrap: "wrap",
         }}
       >
-        <div
-          style={{
-            flex: "1 1 400px",
-            backgroundColor: "#FFF5F7",
-            borderRadius: "12px",
-            padding: "20px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-          }}
-        >
+        <div style={chartCard}>
           <h3 style={{ color: "#B83280", marginBottom: "16px" }}>
             Orders by Status
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={ordersData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#D946EF"
-                label
-              >
-                {ordersData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <ReTooltip />
-              <Legend verticalAlign="bottom" height={36} />
-            </PieChart>
-          </ResponsiveContainer>
+          <div style={{ height: 300 }}>
+            <ResponsivePie
+              data={ordersData}
+              margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
+              innerRadius={0.5}
+              padAngle={0.7}
+              cornerRadius={3}
+              colors={({ data }) => data.color}
+              borderWidth={1}
+              borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+              arcLabelsTextColor="#333333"
+              arcLinkLabelsTextColor="#333333"
+              arcLinkLabelsColor={{ from: "color" }}
+              legends={[
+                {
+                  anchor: "bottom",
+                  direction: "row",
+                  translateY: 56,
+                  itemWidth: 100,
+                  itemHeight: 14,
+                  symbolSize: 14,
+                  symbolShape: "circle",
+                },
+              ]}
+            />
+          </div>
         </div>
 
-        <div
-          style={{
-            flex: "1 1 400px",
-            backgroundColor: "#FFF5F7",
-            borderRadius: "12px",
-            padding: "20px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-          }}
-        >
+        <div style={chartCard}>
           <h3 style={{ color: "#B83280", marginBottom: "16px" }}>
             Leads by Stage
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
+          <div style={{ height: 300 }}>
+            <ResponsiveBar
               data={leadsByStage}
-              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="stage" tick={{ fill: "#B83280" }} />
-              <YAxis />
-              <ReTooltip />
-              <Bar dataKey="count" fill="#D946EF" />
-            </BarChart>
-          </ResponsiveContainer>
+              keys={["count"]}
+              indexBy="stage"
+              margin={{ top: 20, right: 30, bottom: 50, left: 40 }}
+              padding={0.3}
+              colors={{ scheme: "purple_red" }}
+              borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                legend: "Stage",
+                legendPosition: "middle",
+                legendOffset: 36,
+              }}
+              axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                legend: "Leads",
+                legendPosition: "middle",
+                legendOffset: -40,
+              }}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
+              labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+              legends={[
+                {
+                  dataFrom: "keys",
+                  anchor: "bottom-right",
+                  direction: "column",
+                  translateX: 120,
+                  itemWidth: 100,
+                  itemHeight: 20,
+                  symbolSize: 14,
+                },
+              ]}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -211,4 +216,12 @@ const cardRow = {
   display: "flex",
   gap: "20px",
   flexWrap: "wrap",
+};
+
+const chartCard = {
+  flex: "1 1 400px",
+  backgroundColor: "#FFF5F7",
+  borderRadius: "12px",
+  padding: "20px",
+  boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
 };
