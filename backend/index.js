@@ -20,7 +20,6 @@ app.use(
       }
       return callback(null, true);
     },
-    credentials: true, // if you use cookies/auth
   })
 );
 app.use(express.json());
