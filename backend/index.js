@@ -7,7 +7,7 @@ const pool = require("./db/db");
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // your local CRA dev server
-  "https://track-flow-eight.vercel.app/", //
+  "https://track-flow-30ezwemhx-parths-projects-1a600c3b.vercel.app/", //
 ];
 
 app.use(
