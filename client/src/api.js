@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://trackflow-d2hg.onrender.com";
 
 export async function fetchLeads() {
   const res = await fetch(`${API_BASE}/leads`);
